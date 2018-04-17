@@ -1,0 +1,185 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  contact:
+    email: support@checkout.com
+  title: CRIF API
+  description: >-
+    Spec for internal CRIF API. CRIF provides active payment method selection and returns available payment methods based on the shopper's solvency.
+servers:
+  - url: https://devapi.ckotech.co/crif-internal
+    description: Internal staging server for testing
+tags:
+- name: 'Credit Check'
+  description: 'Credit Check Service'
+paths:
+  '/creditcheck/':
+    post:
+      tags:
+      - 'Credit Check'
+      summary: Retrieve available payment methods
+      description: >-
+        Sending customer information to CRIF API in order to request a credit score evaluation and receive an Active Payment Method Selection as a response.
+      requestBody:
+        required: true
+        description: Payload required for credit score evaluation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditCheckRequest'
+      responses:
+        '200':
+          description: >-
+            Available payment methods
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditCheckResponse'
+        '400':
+          description: >-
+            Bad request - request has invalid JSON syntax
+        '422':
+          description: >-
+            Request has validation errors. Either some fields are missing or they contain invalid values
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CreditCheckRequest:
+      type: object
+      description: >-
+        The `CreditCheckRequest` holds all the information to be verified via the CRIF API.
+      required:
+        - customer
+        - billing_address
+      properties:
+        product:
+          $ref: '#/components/schemas/Customer'
+        billing_address:
+          $ref: '#/components/schemas/Address'
+    CreditCheckResponse:
+      type: object
+      description: >-
+        The `CreditCheckResponse` contains available payment methods
+      required:
+       - payment_methods
+      properties:
+        payment_methods:
+          description: a list of payment methods          
+          type: array
+          items:
+            type: string
+          example:
+            - CREDIT_CARD
+            - PREPAYMENT
+            - PAYPAL
+            - INVOICE
+
+    Customer:
+      type: object
+      required:
+        - last_name
+        - first_name
+      properties:
+        last_name:
+          description: customer's last name
+          type: string
+          example: Quintuss
+        first_name:
+          description: customer's first name
+          type: string
+          example: Falk
+        maiden_name:
+          description: customer's maiden name
+          type: string
+        sex:
+          description: customer's sex
+          example: Male
+          type: string
+          enum:
+            - Male
+            - Female
+        dob:
+          description: customer's date of birth in format yyyy-mm-dd
+          type: string
+          format: date
+          example: "1995-05-15"
+        email:
+          description: customer's email address
+          type: string
+          format: email
+        phone:
+          description: customer's phone
+          type: object
+          required:
+            - country_code
+            - number
+          properties:
+            country_code:
+              type: string
+              description: country's calling code
+              example: "+49"
+            number:
+              type: string
+              description: customer's phone number without country's calling code
+              example: "123 456 7"
+
+    ErrorResponse:
+      type: object
+      required:
+        - request_id
+        - error_type
+        - error_codes
+      properties:
+        request_id:
+          type: string
+          description: "Unique Id for this request."
+          example: "beug8y83h978yh"
+        error_type:
+          type: string
+          description: "Indicates the group the error relates to."
+          example: "request_invalid"
+        error_codes:
+          type: array
+          items:
+            type: string
+          description: "Array of error messages."
+          example:
+            - customer_first_name_required
+            - address_country_invalid
+    Address:
+      type: object
+      required: 
+        - street
+        - house
+        - city
+        - zip
+        - country
+      properties:
+        street:
+          type: string
+          description: name of the street
+          example: Rudi-Dutschke-Strasse 
+        house:
+          type: string
+          description: house number
+          example: 26
+        house_extension:
+          type: string
+          description: house number suffix
+          example: b
+        city:
+          type: string
+          description: name of the city
+          example: Berlin
+        zip:
+          type: string
+          description: zip code
+          example: 11664
+        country:
+          type: string
+          description: three letter country code (ISO 3166-1 alpha-3-Code)
+          example: DEU

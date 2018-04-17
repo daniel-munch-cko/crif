@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:ordercheck="http://www.deltavista.com/dspone/ordercheck-if/V001" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns="http://www.deltavista.com/dspone/ordercheck_V001" targetNamespace="http://www.deltavista.com/dspone/ordercheck_V001">
+	<wsdl:types>
+		<xs:schema targetNamespace="http://www.deltavista.com/dspone/ordercheck_V001">
+			<xs:import namespace="http://www.deltavista.com/dspone/ordercheck-if/V001" schemaLocation="dspone-interface-ordercheck-soap_V001.xsd"/>
+		</xs:schema>
+	</wsdl:types>
+	<wsdl:message name="messageContext">
+		<wsdl:part name="context" element="ordercheck:messageContext"/>
+	</wsdl:message>
+	<wsdl:message name="orderCheckRequestIn">
+		<wsdl:part name="parameter" element="ordercheck:orderCheckRequest">
+    </wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="orderCheckResponseOut">
+		<wsdl:part name="return" element="ordercheck:orderCheckResponse">
+    </wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="errorMessage">
+		<wsdl:part name="error" element="ordercheck:error"/>
+	</wsdl:message>
+	<wsdl:portType name="OrderCheckPortType">
+		<wsdl:operation name="orderCheck">
+			<wsdl:input name="input" message="orderCheckRequestIn">
+    </wsdl:input>
+			<wsdl:output name="output" message="orderCheckResponseOut">
+    </wsdl:output>
+			<wsdl:fault name="error" message="errorMessage">
+    </wsdl:fault>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="OrderCheckServiceBinding" type="OrderCheckPortType">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+		<wsdl:operation name="orderCheck">
+			<soap:operation soapAction="urn:orderCheck" style="document"/>
+			<wsdl:input name="input">
+				<soap:body parts="parameter" use="literal"/>
+				<soap:header message="messageContext" part="context" use="literal"/>
+			</wsdl:input>
+			<wsdl:output name="output">
+				<soap:body parts="return" use="literal"/>
+				<soap:header message="messageContext" part="context" use="literal"/>
+			</wsdl:output>
+			<wsdl:fault name="error">
+				<soap:fault name="error" use="literal"/>
+			</wsdl:fault>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="OrderCheckService">
+		<wsdl:port name="OrderCheckPort" binding="OrderCheckServiceBinding">
+			<soap:address location="https://ordercheck.deltavista.de/soap"/>
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

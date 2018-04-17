@@ -1,0 +1,2236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ordercheck="http://www.deltavista.com/dspone/ordercheck-if/V001" targetNamespace="http://www.deltavista.com/dspone/ordercheck-if/V001" elementFormDefault="qualified" attributeFormDefault="unqualified" version="2.60">
+	<xs:element name="orderCheckRequest" type="ordercheck:OrderCheckRequest">
+		<xs:annotation>
+			<xs:documentation>OrderCheck request root element</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="orderCheckResponse" type="ordercheck:OrderCheckResponse">
+		<xs:annotation>
+			<xs:documentation>OrderCheck response root element</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="messageContext" type="ordercheck:MessageContext">
+		<xs:annotation>
+			<xs:documentation>MessageContext root element</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:complexType name="MessageContext">
+		<xs:annotation>
+			<xs:documentation>Header structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="credentials" type="ordercheck:Credentials">
+				<xs:annotation>
+					<xs:documentation>data for authentication and authorization</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="correlationID" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>unique ID to link request to response</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Credentials">
+		<xs:annotation>
+			<xs:documentation>Header - credentials definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="user" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>user name as in system</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="password" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>user password as in system</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OrderCheckRequest">
+		<xs:annotation>
+			<xs:documentation>OrderCheckRequest structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="product" type="ordercheck:Product">
+				<xs:annotation>
+					<xs:documentation>parameters of requested product</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="archiveID" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>archive ID from Archive instead of searchedAddress</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="searchedAddress" type="ordercheck:SearchedAddress" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>search criteria for person or company - subject of the creditworthiness assessment</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="additionalAddress" type="ordercheck:AdditionalAddress" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>additional addresses to be used in processing</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="clientData" type="ordercheck:ClientData" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>client-specific data </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Product">
+		<xs:annotation>
+			<xs:documentation>Basic Product definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>product identifier</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="version" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>product version</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="country" type="ordercheck:Country" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>points to the local system for product call</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="language" type="ordercheck:Language" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>language for translatable values in response</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="proofOfInterest" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>proof of interest for the request</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AdditionalAddress">
+		<xs:annotation>
+			<xs:documentation>Client may send additional addresses to be used in processing</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:SearchedAddress">
+				<xs:sequence>
+					<xs:element name="type" type="xs:string">
+						<xs:annotation>
+							<xs:documentation>classification of a multiple entries (former, bill, delivery, employer, related company, owner, etc.)</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SearchedAddress">
+		<xs:annotation>
+			<xs:documentation>SearchCandidate structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="deltavistaID" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Deltavista ID of a company/person address</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="registry" type="ordercheck:CompanyRegistryID" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>company can be identified by its registration number</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="legalForm" type="ordercheck:LegalForm" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>legal form: private or company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="address" type="ordercheck:Address" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>data of person or company to check</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contact" type="ordercheck:Contact" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>contact data of the client</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="customer" type="ordercheck:CustomerData" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identification data of the customers as in the client system</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CompanyRegistryID">
+		<xs:annotation>
+			<xs:documentation>CompanyRegistryID structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="type" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>type of registration (commercial or trade registry)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="number" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>registry number of the company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="zip" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>zip of registry office (e.g. court)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="city" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>city of registry office (e.g. court)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Address">
+		<xs:annotation>
+			<xs:documentation>Address data definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>company name or last name of private person</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="firstName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>first name of private person (empty for company, except PPC)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="maidenName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>maiden name of  person (empty for company, except PPC)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="gender" type="ordercheck:Gender" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>sex of private person (empty for company, except PPC)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dateOfBirth" type="ordercheck:Date_YYYYMMDD" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>date of birth of private person (empty for company, except PPC)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="location" type="ordercheck:Location" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>location data</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LocationWithType">
+		<xs:sequence>
+			<xs:element name="type" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Location data definition</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="street" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>name of the street</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="house" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>house number (with eventual suffixes)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="houseExtension" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>extension number, e.g. flat number</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="city" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>name of the city</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="zip" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>zip code of location</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="country" type="ordercheck:Country" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>country of the person or company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Location">
+		<xs:annotation>
+			<xs:documentation>Location data definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="street" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>name of the street</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="house" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>house number (with eventual suffixes)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="houseExtension" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>extension number, e.g. flat number</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="city" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>name of the city</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="zip" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>zip code of location</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="country" type="ordercheck:Country" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>country of the person or company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OrderCheckResponse">
+		<xs:annotation>
+			<xs:documentation>OrderCheckResponse structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="returnCode" type="ordercheck:ReturnCode">
+				<xs:annotation>
+					<xs:documentation>return code, available values: 
+	0 - nothing found, 
+	1 - report, 
+	2 - candidate list  </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="product" type="ordercheck:Product" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>description of returned product</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="archiveID" type="xs:long">
+				<xs:annotation>
+					<xs:documentation>unique ID identifying report in Archive
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="reportCreationTime" type="ordercheck:Date_YYYYMMDDHHmm">
+				<xs:annotation>
+					<xs:documentation>time of report generation (stored in archive)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="foundAddress" type="ordercheck:FoundAddress" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>data of found person or company ("Beauskunftet")</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="myDecision" type="ordercheck:MyDecision" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>decision section of the report</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="personBasicData" type="ordercheck:PersonBasicData" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>basic data of person</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="companyBasicData" type="ordercheck:CompanyBasicData" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>basic data of company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="decisionMatrix" type="ordercheck:DecisionMatrix" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>the decision matrix elements</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="paymentHistory" type="ordercheck:PaymentHistory" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>information about negative payment behaviors</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="similarHitAddress" type="ordercheck:SimilarCandidate" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>list of similar addresses or candidate list</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="normalization" type="ordercheck:Normalization" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>part of IdentificationProcess Section</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="candidate" type="ordercheck:SimilarCandidate" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>list of candidates returned instead of product</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="clientExtensions" type="ordercheck:ClientExtensions" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>client specific extensions of the product</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="executionStrategy" type="ordercheck:ExecutionStrategy" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>details of selected check strategy (RCO)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IdentifiableAddress">
+		<xs:annotation>
+			<xs:documentation>IdentifiableAddress structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="legalForm" type="ordercheck:LegalForm">
+				<xs:annotation>
+					<xs:documentation>legal form: private or company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="address" type="ordercheck:Address">
+				<xs:annotation>
+					<xs:documentation>data of a person or a company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="addressID" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>unique ID for address in Deltavista Registry</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ClientData">
+		<xs:annotation>
+			<xs:documentation>ClientSpecific data structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="userReference" type="ordercheck:UserReference" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>reference data of the user at client site</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="reference" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>client's internal reference for customer (contract, offer,..)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="bankAccount" type="ordercheck:BankAccountDetails" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>bank account details or credit card details</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="order" type="ordercheck:Order" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>data about the order, application (web shop basket, credit, etc)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!--
+			<xs:element name="customer" type="ordercheck:CustomerData" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identification data of the customers as in the client system</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			-->
+			<xs:element name="additionalData" type="ordercheck:AdditionalDataItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>generic collection of client data extending the standard OC</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="UserReference">
+		<xs:annotation>
+			<xs:documentation>UserReference data structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="userID" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>client's internal user id</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="name" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>last name of the user</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="firstName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>first name of the client's user</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="orgUnit" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>organization unit the client's user belongs to</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="costCenter" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>client's cost center</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AdditionalDataItem">
+		<xs:annotation>
+			<xs:documentation>AdditionalData item structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>name of the client's additional data </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>client element value</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Identification">
+		<xs:annotation>
+			<xs:documentation>Response section - Identification - root structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="foundCandidate" type="ordercheck:FoundAddress" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>data of found person or company ("Beauskunftet")</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FoundAddress">
+		<xs:annotation>
+			<xs:documentation>FoundAddress structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="legalForm" type="ordercheck:LegalForm">
+				<xs:annotation>
+					<xs:documentation>legal form: private or company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="address" type="ordercheck:Address">
+				<xs:annotation>
+					<xs:documentation>data of found person or company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MyDecision">
+		<xs:annotation>
+			<xs:documentation>Response section - MyDecision - root structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="decision" type="ordercheck:TrafficLight">
+				<xs:annotation>
+					<xs:documentation>traffic light (green, yellow, red)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="recommendation" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>textual hint for handling</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="limit" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>credit limit of Deltavista or of the client</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="currency" type="ordercheck:Currency" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>currency of the credit limit</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PersonBasicData">
+		<xs:annotation>
+			<xs:documentation>Response section - PersonBasicData - root structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="knownSince" type="ordercheck:Date_YYYYMMDD" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>entry date of first address of the person to the system</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="contact" type="ordercheck:Contact" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>contact data</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="environment" type="ordercheck:Environment" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>environment data for persons only</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Environment">
+		<xs:annotation>
+			<xs:documentation>Environment data definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="householdSize" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>size classification of a household</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="houseSize" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>size classification of a house</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="companiesInHouse" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>classification of number of companies in the house</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="citySize" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>size classification of a city</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CompanyBasicData">
+		<xs:annotation>
+			<xs:documentation>Response section - CompanyBasicData - root structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="contact" type="ordercheck:Contact" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>contact data</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="officialName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>as registered in reference registries</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nameVariant" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>free name from main or phone book, etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="location" type="ordercheck:LocationWithType" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>alternative addresses</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="branchesCount" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>number of active branches</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="classification" type="ordercheck:Classification" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>classification data of company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="registration" type="ordercheck:Registration" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identification number in official  registries and directories</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dateOfFoundation" type="ordercheck:Date_YYYYMMDD" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>foundation date (e.g. before registration, change of registry or merge) </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="knownSince" type="ordercheck:Date_YYYYMMDD" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>first date known as beginning of the commercial activity</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="financeData" type="ordercheck:FinanceData" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>recent finance data</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Contact">
+		<xs:annotation>
+			<xs:documentation>Contact data structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="item" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>way of remote contact: phone, mobile, url, email</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>value of the item, e.g. phone number, email address, etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Classification">
+		<xs:annotation>
+			<xs:documentation>Classification data structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="companyLegalForm" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>exact legal form (GmbH, AG, OHG, etc.)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="industryCode" type="ordercheck:IndustryCode" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>industry classifications: NACE, Noga, WZ2003, SIC, etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IndustryCode">
+		<xs:annotation>
+			<xs:documentation>IndustryCode data structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>name of the classification directory</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="code" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>industry code value</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>code description</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Registration">
+		<xs:annotation>
+			<xs:documentation>Registration data structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="companyRegistry" type="ordercheck:CompanyRegistry" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>data of the company's registration</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CompanyRegistry">
+		<xs:annotation>
+			<xs:documentation>CompanyRegistry data structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="type" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>type of registration (commercial or trade registry)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="number" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>registry number of the company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dateOfRegistration" type="ordercheck:Date_YYYYMMDD" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>date of registration of the company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="registryZip" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>zip of the registry court</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="registryCity" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>city of the registry court</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Directory">
+		<xs:annotation>
+			<xs:documentation>Directory data structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="type" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>type of directory (UID, OEBC, DnB, other local)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="number" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>unique identifier within the ID directory</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="FinanceData">
+		<xs:annotation>
+			<xs:documentation>FinanceData structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="capital" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>nominal capital</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="currency" type="ordercheck:Currency" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>currency of capital and revenue</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="shareCount" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>nominal share value</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="revenue" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>annual revenue</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="employeeCount" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>number of employees</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="yearEndCloseDate" type="ordercheck:Date_YYYYMMDD" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>date of year-end-close</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="yearEndClosePublicationDate" type="ordercheck:Date_YYYYMMDD" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrix">
+		<xs:annotation>
+			<xs:documentation>Response section - DecisionMatrix - root structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="item" type="ordercheck:DecisionMatrixItemStringWithName" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>generic item to allow for client/backward compatible extensions</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="identificationDecision" type="ordercheck:IdentificationDecision" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>summary traffic light of the identification section</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="solvencyDecision" type="ordercheck:SolvencyDecision" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>summary traffic light of the solvency section</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="clientExtensionsDecision" type="ordercheck:ClientExtensionsDecision" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>summary traffic light of the client extensions section</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ClientExtensionsDecision">
+		<xs:annotation>
+			<xs:documentation>Response section - DecisionMatrix - root structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="customerList" type="ordercheck:DecisionMatrixItemStringWithOverride" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>hits in the Customer Lists</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="applicationFilter" type="ordercheck:DecisionMatrixItemStringWithOverride" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>hits in the Application Filter</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="myScore" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>score of the client</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="policyRule" type="ordercheck:DecisionMatrixItemStringWithOverride" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>client-specific rules for decision making</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="creditLimitStatus" type="ordercheck:DecisionMatrixItemFloat" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>either budget limit or LGD limit</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="repetitionFilter" type="ordercheck:DecisionMatrixItemString" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>amount of repetition filters that were hit by the application and made the partial decision</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SolvencyDecision">
+		<xs:annotation>
+			<xs:documentation>Response section - DecisionMatrix - root structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="score" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains credit score value with partialDecision and comment </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="externalAgencyScore" type="ordercheck:DecisionMatrixItemExternalAgencyScore" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>collection of scores returned by 3rd credit bureaus</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="paymentExperience" type="ordercheck:DecisionMatrixItemPHS" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains category of the payment history with partialDecision and comment</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="paymentIndex" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>paymentHistoryIndex</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="informationUnderReserve" type="ordercheck:DecisionMatrixItemString" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains ICD Meldung unter Vorbehalt with partialDecision and comment</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="bankAccountCheck" type="ordercheck:DecisionMatrixItemBankAccountCheck" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>bank account check status, RüLA</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="scoreBalanceSheet" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains score of the balance sheet and profit and losses statement
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="scoreWorstSubsidiary" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains lowest score amongst all daughter companies with partialDecision and comment</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="scoreMotherCompany" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains score of parent company with partialDecision and comment</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="externalSourcesProcessingStatus" type="ordercheck:DecisionMatrixItemExternalProcessingStatus" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>flag indicating if all requested 3rd sources replied without error
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="auditorStatus" type="ordercheck:DecisionMatrixItemString" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>it shows if the auditor/revision company is known</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="decisionMakerPaymentExperience" type="ordercheck:DecisionMatrixItemDMPaymentExperience" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>financial condition of decision makers expressed in classification</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="decisionMakerPaymentIndex" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Bonitätswert of the Austrian OC</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="decisionMakerOtherCompaniesPaymentIndex" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Bonitätswert of the Austrian OC</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="daysSinceInBusiness" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>number of days since beginning of commercial activity</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="daysSinceNameChange" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains number of days since name change of company with partialDecision and comment</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="daysSinceDomicileChange" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains number of days since domicile change of company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="daysSinceAuditorChange" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains number of days since auditor change of company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="daysSinceOwnerChange" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains number of days after the owner has been changed</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nonCapitalAssets" type="ordercheck:DecisionMatrixItemString" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>investment in kind (for company only)
+</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="IdentificationDecision">
+		<xs:annotation>
+			<xs:documentation>Response section - DecisionMatrix - root structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="personStatus" type="ordercheck:DecisionMatrixItemPersonStatus" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains person status value with partialDecision and comment</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="companyStatus" type="ordercheck:DecisionMatrixItemCompanyStatus" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains company status value with partialDecision and comment</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="identificationType" type="ordercheck:DecisionMatrixItemIdentificationType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains level of match with partialDecision and comment</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="similarHit" type="ordercheck:DecisionMatrixItemInt" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains indicator of similarHits with partialDecision and comment</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="houseType" type="ordercheck:DecisionMatrixItemString" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>contains hint to address about "suspicious" locations with partialDecision and comment</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nameHint" type="ordercheck:DecisionMatrixItemNameHint" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>suspicious names combinations</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="locationIdentificationType" type="ordercheck:DecisionMatrixItemLocationIdentificationType" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>confirmation of a location</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItem">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="partialDecision" type="ordercheck:TrafficLight">
+				<xs:annotation>
+					<xs:documentation>partial traffic light (green, yellow, red)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="comment" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>textual explanation </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemInt">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with integer value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="xs:int"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemFloat">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with integer value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="xs:float"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemPHS">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with PaymentHistoryStatus value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="ordercheck:PaymentHistoryStatus"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemPersonStatus">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with PersonStatus value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="ordercheck:PersonStatus"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemBankAccountCheck">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with PersonStatus value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="ordercheck:BankAccountCheckResult"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemCompanyStatus">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with CompanyStatus value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="ordercheck:CompanyStatus"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemNameHint">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with NameHint value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="ordercheck:NameHint"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemLocationIdentificationType">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with AddressConfirmation value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="ordercheck:LocationIdentificationType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemExternalProcessingStatus">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with ExternalProcessingStatus value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="ordercheck:ExternalSourcesProcessingStatus"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemDMPaymentExperience">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with DecisionMakerPaymentExperience value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="ordercheck:DecisionMakerPaymentExperience"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemIdentificationType">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with AddressConfirmation value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="ordercheck:IdentificationType"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemDecision">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with Decision value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="ordercheck:Decision"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemString">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with String value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemStringWithOverride">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with String value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="xs:string"/>
+					<xs:element name="override" type="xs:boolean" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemStringWithName">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with String value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItemString">
+				<xs:sequence>
+					<xs:element name="name" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemExternalAgencyScore">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with String value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItemString">
+				<xs:sequence>
+					<xs:element name="scoreName" type="xs:string"/>
+					<xs:element name="agency" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DecisionMatrixItemBoolean">
+		<xs:annotation>
+			<xs:documentation>DecisionMatrixItem structure with boolean value</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:DecisionMatrixItem">
+				<xs:sequence>
+					<xs:element name="value" type="xs:boolean"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PaymentHistory">
+		<xs:annotation>
+			<xs:documentation>Response section - PaymentHistory - root structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="currency" type="ordercheck:Currency">
+				<xs:annotation>
+					<xs:documentation>currency symbol valid for all payment values</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="count" type="xs:int">
+				<xs:annotation>
+					<xs:documentation>number of payment defaults</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dateOfLastEntry" type="ordercheck:Date_YYYYMMDD">
+				<xs:annotation>
+					<xs:documentation>date last entry was opened</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="amountTotal" type="xs:float">
+				<xs:annotation>
+					<xs:documentation>sum of all debt amounts</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="amountTotalOpen" type="xs:float">
+				<xs:annotation>
+					<xs:documentation>sum of all open debt amounts</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="creditStatusMax" type="ordercheck:CreditStatus">
+				<xs:annotation>
+					<xs:documentation>maximal credit status of all entries</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="masterRiskStatus" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>master risk status mapped value</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="detail" type="ordercheck:Detail" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>details of all relevant debts</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Name">
+		<xs:annotation>
+			<xs:documentation>Name structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="lastName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>last name token from reference table (for persons only)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="firstName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>first name token from reference table (for persons only)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SimilarCandidate">
+		<xs:annotation>
+			<xs:documentation>Response section - SimilarAddress - root structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:IdentifiableAddress">
+				<xs:sequence>
+					<xs:element name="similarity" type="xs:int">
+						<xs:annotation>
+							<xs:documentation>similarity to requested address in %</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Error">
+		<xs:annotation>
+			<xs:documentation>Error structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="code" type="xs:int">
+				<xs:annotation>
+					<xs:documentation> 100 Login Error 200 Authorization Error 400 Invalid Field 500 Server Error </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="messageText" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Error message</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="error" type="ordercheck:Error">
+		<xs:annotation>
+			<xs:documentation>Error root element</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:simpleType name="Date_YYYYMMDD">
+		<xs:annotation>
+			<xs:documentation>Deltavista native date format</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="10000101"/>
+			<xs:maxInclusive value="21000101"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Date_YYYYMMDDHHmm">
+		<xs:annotation>
+			<xs:documentation>Deltavista native date format with minutes</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:long">
+			<xs:minInclusive value="100001010000"/>
+			<xs:maxInclusive value="210001010000"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Gender">
+		<xs:annotation>
+			<xs:documentation>Gender values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UNKNOWN"/>
+			<xs:enumeration value="MALE"/>
+			<xs:enumeration value="FEMALE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LegalForm">
+		<xs:annotation>
+			<xs:documentation>LegalForm values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UNKNOWN"/>
+			<xs:enumeration value="PERSON"/>
+			<xs:enumeration value="COMPANY"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Language">
+		<xs:annotation>
+			<xs:documentation>Language basic definition</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="3"/>
+			<xs:minLength value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Currency">
+		<xs:annotation>
+			<xs:documentation>Currency basic definition</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="3"/>
+			<xs:minLength value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Country">
+		<xs:annotation>
+			<xs:documentation>Country basic definition</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="3"/>
+			<xs:minLength value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CreditStatus">
+		<xs:annotation>
+			<xs:documentation>CreditStatus values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="0"/>
+			<xs:enumeration value="1"/>
+			<xs:enumeration value="2"/>
+			<xs:enumeration value="3"/>
+			<xs:enumeration value="4"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PaymentStatus">
+		<xs:annotation>
+			<xs:documentation>PaymentStatus values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UNKNOWN"/>
+			<xs:enumeration value="UNPAID"/>
+			<xs:enumeration value="PARTIALLYPAID"/>
+			<xs:enumeration value="PAID"/>
+			<xs:enumeration value="CLOSED"/>
+			<xs:enumeration value="ASSISTED"/>
+			<xs:enumeration value="SOCIAL_HELP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Nationality">
+		<xs:annotation>
+			<xs:documentation>Nationality basic definition</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="3"/>
+			<xs:minLength value="3"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PaymentHistoryStatus">
+		<xs:annotation>
+			<xs:documentation>PaymentHistoryStatus values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NOPROBLEM"/>
+			<xs:enumeration value="MINOR"/>
+			<xs:enumeration value="SIGNIFICANT"/>
+			<xs:enumeration value="SERIOUS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PersonStatus">
+		<xs:annotation>
+			<xs:documentation>PersonStatus values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UNKNOWN"/>
+			<xs:enumeration value="ADULT"/>
+			<xs:enumeration value="MINOR"/>
+			<xs:enumeration value="WARD"/>
+			<xs:enumeration value="DECEASED"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CustomerListIdentificationLevel">
+		<xs:annotation>
+			<xs:documentation>PersonStatus values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="PERSON"/>
+			<xs:enumeration value="COMPANY"/>
+			<xs:enumeration value="OWNER"/>
+			<xs:enumeration value="FAMILY"/>
+			<xs:enumeration value="HOUSEHOLD"/>
+			<xs:enumeration value="HOUSE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NameHint">
+		<xs:annotation>
+			<xs:documentation>NameHint values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CONFIRMED"/>
+			<xs:enumeration value="EMPTY"/>
+			<xs:enumeration value="FICTIONAL"/>
+			<xs:enumeration value="INCOMPLETE"/>
+			<xs:enumeration value="INVALID"/>
+			<xs:enumeration value="PARTIAL"/>
+			<xs:enumeration value="PROMINENT"/>
+			<xs:enumeration value="TYPO"/>
+			<xs:enumeration value="NO_HINT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IdentificationType">
+		<xs:annotation>
+			<xs:documentation>level of person or company identification</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="IDENTITY_IN_HOUSE"/>
+			<xs:enumeration value="IDENTITY_IN_STREET"/>
+			<xs:enumeration value="IDENTITY_IN_CITY"/>
+			<xs:enumeration value="IDENTITY_IN_UNIVERSE"/>
+			<xs:enumeration value="LASTNAME_IN_HOUSE"/>
+			<xs:enumeration value="NOT_IDENTIFIED"/>
+			<xs:enumeration value="OWNER"/>
+			<xs:enumeration value="COMPANY_GROUP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LocationIdentificationType">
+		<xs:annotation>
+			<xs:documentation>confirmation of location from the request (house, street, city)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CITY_CONFIRMED_STREET_NOT_IDENTIFIED"/>
+			<xs:enumeration value="CITY_CONFIRMED_STREET_NOT_PROVIDED"/>
+			<xs:enumeration value="HOUSE_CONFIRMED"/>
+			<xs:enumeration value="NOT_CONFIRMED"/>
+			<xs:enumeration value="NOT_PROVIDED"/>
+			<xs:enumeration value="STREET_CONFIRMED_HOUSE_NOT_IDENTIFIED"/>
+			<xs:enumeration value="STREET_CONFIRMED_HOUSE_NOT_PROVIDED"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BankAccountCheckResult">
+		<xs:annotation>
+			<xs:documentation>BankAccountCheckStatus values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ACCOUNT_NOT_VALID"/>
+			<xs:enumeration value="ACCOUNT_VALID"/>
+			<xs:enumeration value="ACCOUNT_KNOWN_BLACKLISTED"/>
+			<xs:enumeration value="ACCOUNT_KNOWN_PAYMENTS_REGISTERED"/>
+			<xs:enumeration value="UNVERIFIED"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CompanyStatus">
+		<xs:annotation>
+			<xs:documentation>CompanyStatus values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="UNKNOWN"/>
+			<xs:enumeration value="ACTIVE"/>
+			<xs:enumeration value="INACTIVE"/>
+			<xs:enumeration value="ERASED"/>
+			<xs:enumeration value="BANKRUPT"/>
+			<xs:enumeration value="PENDING"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TrafficLight">
+		<xs:annotation>
+			<xs:documentation>TrafficLight values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="RED"/>
+			<xs:enumeration value="YELLOW"/>
+			<xs:enumeration value="GREEN"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Decision">
+		<xs:annotation>
+			<xs:documentation>Decision values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="YES"/>
+			<xs:enumeration value="NO"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ExternalSourcesProcessingStatus">
+		<xs:annotation>
+			<xs:documentation>ExternalSourcesProcessingStatus values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="OK"/>
+			<xs:enumeration value="ERROR"/>
+			<xs:enumeration value="WARNING"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DecisionMakerPaymentExperience">
+		<xs:annotation>
+			<xs:documentation>DecisionMakerPaymentExperience values</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="MAJOR_DEBTS_INFO"/>
+			<xs:enumeration value="MINOR_DEBTS_INFO"/>
+			<xs:enumeration value="NO_DEBTS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ReturnCode">
+		<xs:annotation>
+			<xs:documentation>Return code basic definition</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:complexType name="BankAccountDetails">
+		<xs:annotation>
+			<xs:documentation>Bank account details or credit card details</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="bankNumber" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>number of a bank (in SEPA format: BIC)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="type" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>bank account or credit card (bank account, Visa, MasterCard, American Express, Diners, Eurocheque, JCB, Maestro, Shopping Card)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="number" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>number of an account</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="validThru" type="ordercheck:Date_YYYYMMDD" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>date until account remains active</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="CVC2" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Card Verification Code: 3 digits (MasterCard, Visa, Diners), 4 digits (American Express)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Order">
+		<xs:annotation>
+			<xs:documentation>Order structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="orderTimestamp" type="ordercheck:Date_YYYYMMDDHHmm" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>date and time of order placement</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="orderID" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identifier of the placed order</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="currency" type="ordercheck:Currency" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>currency of the order items and values</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="orderItem" type="ordercheck:OrderItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>list of goods/services ordered by the customer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="orderValue" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>value of order items (it can be different than sum of order item values sent in the request, e.g. due to limitation of orderItem number)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="totalValue" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>total value of order (it may include additional charges or discounts, shipment cost, etc.)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="actualBalance" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>total value of not yet paid orders (regardless of if exported to Customer List or not)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="balanceAdjustment" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>value of new not yet paid orders since  the last Customer List update</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<!--
+			<xs:element name="contact" type="ordercheck:Contact" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>contact data of the client</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			-->
+			<xs:element name="riskClass" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>classification of order with respect to risk of default</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="channel" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>sales channel (web, phone, letter,…), point of sales</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="OrderItem">
+		<xs:annotation>
+			<xs:documentation>OrderItem structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="number" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identifier of the item, e.g. product or service ordered by the customer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="name" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>name of ordered product</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="group" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>group of the item, e.g. product group</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="price" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>single price of the item</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="amount" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>number of ordered items</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="totalPrice" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>total price for ordered item amount (may consist discounts, etc.)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="deliveryTime" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>expected time of realization of order in days</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="additionalData" type="ordercheck:AdditionalDataItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>it allows adding customer specific additional order data to request</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Profile">
+		<xs:annotation>
+			<xs:documentation>additional characteristic of a customer</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="type" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>definition of the customer type: existing, new, VIP, etc.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="familyStatus" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>marital status of the person</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="profession" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>exact profession or profession class, group </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="income" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>income of the customer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="additionalIncome" type="ordercheck:AdditionalIncome" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="expense" type="ordercheck:Expense" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="credit" type="ordercheck:Credit" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="currency" type="ordercheck:Currency" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>currency of the income</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="nationality" type="ordercheck:Nationality" minOccurs="0"/>
+			<xs:element name="customerSince" type="ordercheck:Date_YYYYMMDD" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>date when a person became a customer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="internalRating" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>internal rating as in the client system </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="additionalData" type="ordercheck:AdditionalDataItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>generic collection of further profile data</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CustomerData">
+		<xs:annotation>
+			<xs:documentation>CustomerIdentification structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="customerID" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identifier of the customer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="divisionID" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identifier of the division maintaining the customer data</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="profile" type="ordercheck:Profile" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>additional characteristic of a customer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Detail">
+		<xs:annotation>
+			<xs:documentation>Details of all relevant debts</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="source" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>source of payment history data (collection, publication, etc.)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="debtorName" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>name of the debtor</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dateOpen" type="ordercheck:Date_YYYYMMDD">
+				<xs:annotation>
+					<xs:documentation>date open</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dateClosed" type="ordercheck:Date_YYYYMMDD" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>date closed</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="amount" type="xs:float">
+				<xs:annotation>
+					<xs:documentation>debt amount</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="amountOpen" type="xs:float">
+				<xs:annotation>
+					<xs:documentation>open debt amount</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="creditStatus" type="ordercheck:CreditStatus" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>credit status of the payment history</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="masterRiskStatus" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>master risk status of the creditStatus</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="paymentStatus" type="ordercheck:PaymentStatus" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>indicates if the outstanding payment was settled</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="comment" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>textual explanation of payment history record</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="courtCaseReferenceNumber" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>file id of the court case</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="courtDescription" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>description of the file-holding court</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="suppliedBy" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>confirms existence of the debt in other sources after the debt merge</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SearchedAddressN">
+		<xs:annotation>
+			<xs:documentation>standardized request address (if possible confirmed against reference data)</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ordercheck:Address">
+				<xs:sequence>
+					<xs:element name="addressID" type="xs:long" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>unique ID for address in Deltavista Registry </xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="unitID" type="xs:long" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>unique ID for unit in Deltavista Registry </xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="liableID" type="xs:long" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>unique ID for liable entity in Deltavista Registry</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="houseID" type="xs:int" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>ID of the house from location reference</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="streetID" type="xs:int" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>ID of the street from location reference</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="cityID" type="xs:int" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>ID of the city from location reference</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="FoundAddressN">
+		<xs:sequence>
+			<xs:element name="addressID" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>unique ID for address in Deltavista Registry </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="unitID" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>unique ID for unit in Deltavista Registry </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="liableID" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>unique ID for liable entity in Deltavista Registry</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="houseID" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>ID of the house from location reference</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="streetID" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>ID of the street from location reference</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="cityID" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>ID of the city from location reference</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Normalization">
+		<xs:annotation>
+			<xs:documentation>Normalization structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="searchedAddress" type="ordercheck:SearchedAddressN" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>standardized request address (if possible confirmed against reference data)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="foundAddress" type="ordercheck:FoundAddressN" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>location identifiers of the found address</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ClientExtensions">
+		<xs:annotation>
+			<xs:documentation>ClientExtensions structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="decisionRule" type="ordercheck:DecisionRule" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>specific decision rules of the client</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="instruction" type="ordercheck:Instruction" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>instruction on further steps to take at client site</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="reference" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>client's internal reference for customer (contract, offer,..)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="customerListEntry" type="ordercheck:CustomerList" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>found entities on the customer list</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="additionalData" type="ordercheck:AdditionalDataItem" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>generic collection of client data extending the standard OC</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Action">
+		<xs:annotation>
+			<xs:documentation>Action structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>name of the instruction</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>value of the instruction</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="code" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>additional code to control execution at client site</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DecisionRule">
+		<xs:annotation>
+			<xs:documentation>DecisionRule definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>name of a rule</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>value of a rule</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="description" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>description of a rule</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="decision" type="ordercheck:TrafficLight" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>traffic light (green, yellow, red)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="type" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>rule type</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="override" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>flag indicating if the item overrides the other items</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CustomerList">
+		<xs:annotation>
+			<xs:documentation>CustomerList structure definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="identificationLevel" type="ordercheck:CustomerListIdentificationLevel">
+				<xs:annotation>
+					<xs:documentation>level of the hit (person, company, owner, family, household, house)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="legalForm" type="ordercheck:LegalForm" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>legal form: private or company</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="addressID" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>unique ID for address in Deltavista Registry </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="unitID" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>unique ID for unit in Deltavista Registry </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="liableID" type="xs:long" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>unique ID for liable entity in Deltavista Registry</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="customerID" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identifier of the customer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="divisionID" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>identifier of the division maintaining the customer data</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="address" type="ordercheck:Address">
+				<xs:annotation>
+					<xs:documentation>address data of found similar candidate</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="riskStatus" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>risk status connected to the customer</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="decision" type="ordercheck:TrafficLight" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>partial decision based on hitType and riskStatus</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="override" type="xs:boolean" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>flag indicating if the item overrides the other items</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ExecutionStrategy">
+		<xs:annotation>
+			<xs:documentation>ExecutionStrategy definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="scoreModel" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Score model for strategy selection</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="scoreModelVersion" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>version of the score model for strategy</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="riskClass" type="xs:int" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Risk class determined by score model</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="riskClassDescription" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Risk class description</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="expectedDefault" type="xs:float" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Computed loss in case of payment default</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="currency" type="ordercheck:Currency" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>currency of the default value</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Instruction">
+		<xs:annotation>
+			<xs:documentation>Instruction definition</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="type" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>type of an instruction (e.g. payment method)</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="name" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>name of the instruction</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="value" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>value of the instruction</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="reference" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>reference to decisionRule or other elements as decision matrix items</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="action" type="ordercheck:Action" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>steps related to an instruction</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="AdditionalIncome">
+		<xs:sequence>
+			<xs:element name="type" type="xs:string"/>
+			<xs:element name="value" type="xs:double"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Expense">
+		<xs:sequence>
+			<xs:element name="type" type="xs:string"/>
+			<xs:element name="value" type="xs:double"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Credit">
+		<xs:sequence>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element name="value" type="xs:double" minOccurs="0"/>
+			<xs:element name="date" type="ordercheck:Date_YYYYMMDD" minOccurs="0"/>
+			<xs:element name="transfer" type="xs:boolean" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
