@@ -42,6 +42,12 @@ namespace Crif.Api
             ConfigureOptions(services);
             AssertOptions();
 
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
+            }));
             services.AddSingleton(_rootLogger);
             services.AddTransient<ICreditCheckService, CrifService>();
             services
@@ -129,6 +135,7 @@ namespace Crif.Api
                 app.UsePathBase(pathBase);
             }
 
+            app.UseCors("MyPolicy");
             app.UseMiddleware<ResponseHeadersMiddleware>();
             app.UseMiddleware<CorrelationIdLoggingMiddleware>(_rootLogger);
             app.UseMiddleware<RequestLoggingMiddleware>(_rootLogger);
